@@ -1,0 +1,23 @@
+{
+  "name": "lazybench",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "serve": "npx http-server -p 4200",
+    "test": "npm run test-firefox && npm run test-chrome",
+    "test-e2e": "npx playwright test tests/e2e",
+    "test-perf": "npx playwright test tests/performance --project=Chrome* --project=\"Mobile Chrome*\"",
+    "test-ui": "npx playwright test --ui --project=\"Mobile Chrome*\"",
+    "report": "npx playwright show-report"
+  },
+  "private": true,
+  "dependencies": {
+    "@playwright/test": "^1.43.1",
+    "http-server": "^14.1.1",
+    "lazysizes": "^5.3.2",
+    "playwright": "^1.32.1",
+    "vanilla-lazyload": "^19.1.3"
+  }
+}
