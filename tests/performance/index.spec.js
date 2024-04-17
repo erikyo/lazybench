@@ -2,8 +2,10 @@ import { expect, test } from "@playwright/test";
 import {chromium} from "playwright";
 
 const pagesWithSimpleImages = [
-  { url: "/demos/image_basic-VLL.html", description: "image basic demo - Vanilla lazy load", scriptName: "VanillaLazyload" },
-  { url: "/demos/image_basic-LS.html", description: "image basic demo - Lazysizes", scriptName: "Lazysizes" },
+  { url: "/demos/image_basic-VLL.html", description: "Performance - Vanilla lazy load", scriptName: "VanillaLazyload" },
+  { url: "/demos/image_basic-LS.html", description: "Performance - Lazysizes", scriptName: "Lazysizes" },
+  { url: "/demos/image_basic-NO.html", description: "Performance - no lazyload", scriptName: "no lazyload" },
+  { url: "/demos/image_basic-NATIVE.html", description: "Performance - native lazyload", scriptName: "native lazyload" },
 ];
 
 const networkConditions = {
@@ -21,7 +23,7 @@ const networkConditions = {
 
 for (const condition in networkConditions) {
   for (const {url, description, scriptName} of pagesWithSimpleImages) {
-    test(description + " - " + condition, async ({ page, browser }) => {
+    test(description + " - " + scriptName + " - " + condition, async ({ page, browser }) => {
       const context = await browser.newContext();
       const session = await context.newCDPSession(page)
       // set network conditions
@@ -52,17 +54,20 @@ for (const condition in networkConditions) {
 
         // Check the src attribute
         await expect(image).toHaveAttribute("src");
+
+        // expect for the image to be fully loaded
+        await expect(image).toHaveJSProperty("complete", true);
       }
 
       await page.evaluate(() => (window.performance.mark('Perf:Ended')))
       //Performance measure
       await page.evaluate(() => (window.performance.measure("overall", "Perf:Started", "Perf:Ended")))
 
-      const getAllMarksJson = await page.evaluate(() => (JSON.stringify(window.performance.getEntriesByType("mark"))))
+      const getAllMarksJson = await page.evaluate(() => (JSON.stringify(window.performance.getEntriesByType("mark"), null, 2)))
       const getAllMarks = await JSON.parse(getAllMarksJson)
       console.log('window.performance.getEntriesByType("mark")', getAllMarks)
 
-      const getAllMeasuresJson = await page.evaluate(() => (JSON.stringify(window.performance.getEntriesByType("measure"))))
+      const getAllMeasuresJson = await page.evaluate(() => (JSON.stringify(window.performance.getEntriesByType("measure"), null, 2)))
       const getAllMeasures = await JSON.parse(getAllMeasuresJson)
       console.log('window.performance.getEntriesByType("measure")', getAllMeasures)
 
