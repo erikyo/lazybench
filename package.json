@@ -6,9 +6,8 @@
   "type": "module",
   "scripts": {
     "serve": "npx http-server -p 4200",
-    "test": "npm run test-e2e && npm run test-perf",
+    "test": "npx playwright test tests/performance --project=Chrome* --project=\"Mobile Chrome*\"",
     "test-e2e": "npx playwright test tests/e2e",
-    "test-perf": "npx playwright test tests/performance --project=Chrome* --project=\"Mobile Chrome*\"",
     "test-ui": "npx playwright test --ui --project=\"Mobile Chrome*\"",
     "report": "npx playwright show-report"
   },
